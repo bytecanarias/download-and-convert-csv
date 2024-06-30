@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import csv
+import subprocess
 
 # URL de la página de inicio de sesión
 login_url = 'https://ejemplo.es/login' # url según web ejemplo.es/original.asp o ejemplo.es/login
@@ -86,3 +87,14 @@ output_csv_path='tarifas.csv'
 dataFrame.to_csv(output_csv_path, index=False, sep=';', quoting=csv.QUOTE_MINIMAL)
 
 # print(f'Archivo CSV generado: {output_csv_path}')
+
+# Ejecutar el comando rclone copyto
+source_file = 'tarifas.csv'
+destination = 'mover-csv:/web/ejemplo.com/public_html/wp-content/uploads/wpallimport/files/tarifas.csv'
+
+try:
+    subprocess.run(['rclone', 'copyto', source_file, destination], check=True)
+    # print(f'Archivo {source_file} copiado a {destination}')
+except subprocess.CalledProcessError as e:
+    # print(f'Error al ejecutar rclone: {e}')
+    pass
